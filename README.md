@@ -181,7 +181,3 @@ From `CLIManager.cliAccessToString()`:
 
 This entire project was **vibe coded** — discovered through a live debugging session with Claude (Anthropic), reverse engineering Motorola's `CliManagerService` and `CliManagerShellCommand` classes via JADX decompilation of `services.jar` and `ExternalDisplayLauncher.apk`. No prior documentation for the `climanager` shell commands existed; we found them by pulling system JARs off the phone and decompiling them until we hit the right class. Therefore this may not work with other Razr models and there may be bugs.
 
-## License
-
-MIT
-# launch-anything-on-Razr-2024-plus-cover-screen
