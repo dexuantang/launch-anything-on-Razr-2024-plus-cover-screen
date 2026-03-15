@@ -20,16 +20,15 @@ Motorola ships a hidden shell service called `climanager` with commands to manag
 
 ## Requirements
 
-- **Computer** with ADB installed:
+- **Linux or macOS Computer** with ADB installed (Only tested on Arch Linux):
   - Arch Linux: `sudo pacman -S android-tools`
   - Ubuntu/Debian: `sudo apt install adb`
   - macOS: `brew install android-platform-tools`
-  - Windows: [Download Platform Tools](https://developer.android.com/tools/releases/platform-tools)
 - **USB cable** connecting your phone to the computer
 - **USB Debugging** enabled on the phone:
   - Go to `Settings > About Phone` and tap `Build Number` 7 times to enable Developer Options
   - Go to `Settings > System > Developer Options` and enable `USB Debugging`
-  - If your inner screen is broken, you'll need to do this via the external display (if accessible) or have it pre-enabled
+  - If your inner screen is broken, you'll need access system settings by screen mirroring of some sort.
 
 ## Quick Start
 
