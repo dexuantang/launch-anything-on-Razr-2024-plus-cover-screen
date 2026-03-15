@@ -31,8 +31,6 @@ Motorola ships a hidden shell service called `climanager` with commands to manag
   - Go to `Settings > System > Developer Options` and enable `USB Debugging`
   - If your inner screen is broken, you'll need to do this via the external display (if accessible) or have it pre-enabled
 
-> **Note:** If your inner screen is already broken and you haven't enabled USB Debugging, you may be able to navigate to Developer Options through the external display's Settings panel (if it's in your app list), or use [scrcpy](https://github.com/Genymobile/scrcpy) to mirror and interact with the phone via your computer.
-
 ## Quick Start
 
 ```bash
@@ -68,49 +66,6 @@ chmod +x razr-cli-fix.sh
 
 The `set-allow-all-oncli` flag and user-set whitelist entries **do not persist** across reboots. You need to re-run the script after every reboot.
 
-### Options for Automating This
-
-**Option A: Run from your computer after each reboot**
-
-The simplest approach. Just run `./razr-cli-fix.sh` from your laptop whenever the phone restarts. You can also set up wireless ADB so you don't need a cable:
-
-```bash
-# One-time setup (while connected via USB)
-adb tcpip 5555
-adb connect <phone-ip-address>:5555
-
-# Now you can disconnect USB and run the script wirelessly
-./razr-cli-fix.sh
-```
-
-**Option B: On-device automation with root**
-
-If you root with [KernelSU](https://kernelsu.org/) or [Magisk](https://github.com/topjohnwu/Magisk), you can create a boot script at `/data/adb/service.d/fix-cli.sh`:
-
-```bash
-#!/system/bin/sh
-sleep 15
-cmd climanager set-allow-all-oncli true
-cmd climanager set-pkg-allowed-oncli com.android.settings true
-cmd climanager set-cn-allowed-oncli com.android.settings/.Settings true
-cmd climanager set-pkg-allowed-oncli com.android.dialer true
-cmd climanager set-pkg-allowed-oncli com.android.phone true
-cmd climanager set-pkg-allowed-oncli com.motorola.cli.settings true
-cmd climanager set-pkg-allowed-oncli com.motorola.dolby.dolbyui true
-cmd climanager set-pkg-allowed-oncli com.motorola.securityhub true
-cmd climanager set-pkg-allowed-oncli com.motorola.launcher3 true
-cmd climanager set-pkg-allowed-oncli com.motorola.personalize true
-cmd climanager set-pkg-allowed-oncli com.google.android.apps.nbu.files true
-cmd climanager set-pkg-allowed-oncli com.google.android.apps.googleassistant true
-cmd climanager set-pkg-allowed-oncli com.google.android.setupwizard true
-cmd climanager set-pkg-allowed-oncli com.google.android.cellbroadcastreceiver true
-cmd climanager set-pkg-allowed-oncli com.google.android.apps.podcasts true
-cmd climanager set-pkg-allowed-oncli com.lenovo.motorola.argus.camera true
-```
-
-**Option C: Termux:Boot (requires root for `cmd`)**
-
-Install [Termux](https://f-droid.org/en/packages/com.termux/) and [Termux:Boot](https://f-droid.org/en/packages/com.termux.boot/) from F-Droid, then place the same script in `~/.termux/boot/`.
 
 ## How It Works
 
@@ -167,8 +122,6 @@ com.motorola.securityhub
 com.zui.zhealthy
 ```
 
-(Many of these are China-region apps that won't be installed on US/EU devices, but they're still in the deny list.)
-
 ## Using a Third-Party Launcher
 
 You can launch [Niagara Launcher](https://play.google.com/store/apps/details?id=bitpit.launcher) (or any launcher) on the external display:
@@ -196,42 +149,7 @@ adb shell cmd package set-home-activity bitpit.launcher/.ui.HomeActivity
 
 But this won't affect the external display's home behavior.
 
-## Compatibility
 
-| Device | Codename | Tested |
-|--------|----------|--------|
-| Motorola Razr+ 2024 | arcfox | ✅ Yes |
-| Motorola Razr 2024 (non-plus) | - | Likely works (same `climanager` service) |
-| Motorola Razr+ 2023 | - | Untested (should have `climanager`) |
-| Motorola Razr 50 Ultra | - | Untested (same platform) |
-
-If you test on another device, please open an issue or PR with results.
-
-## Troubleshooting
-
-### "No device found"
-- Make sure USB Debugging is enabled
-- Check `adb devices` shows your phone
-- Try a different USB cable (some are charge-only)
-- Authorize the computer on the phone when prompted
-
-### App still shows "Flip open to continue"
-- Run `./razr-cli-fix.sh --check` to see current state
-- The app may need to be explicitly whitelisted: `./razr-cli-fix.sh --add <package.name>`
-- Find the package name: `adb shell pm list packages | grep <keyword>`
-
-### Fixes don't persist after reboot
-- This is expected behavior. Re-run the script after each reboot.
-- See the [automation options](#options-for-automating-this) above.
-
-### Inner screen is broken and can't enable USB Debugging
-- If touch still works on the cover screen, try navigating to Settings > Developer Options via the external display
-- Use `scrcpy` with wireless ADB if it was previously enabled
-- As a last resort, you may need to use Motorola's recovery tools
-
-### climanager service not available
-- Make sure this is a Motorola Razr device with the CLI display
-- Check: `adb shell service list | grep climanager`
 
 ## Technical Details
 
@@ -259,9 +177,9 @@ From `CLIManager.cliAccessToString()`:
 | 1 | IGNORED |
 | 2 | DEFAULT (uses deny/allow list logic) |
 
-## Credits
+## Disclaimer
 
-This entire project was **vibe coded** — discovered through a live debugging session with Claude (Anthropic), reverse engineering Motorola's `CliManagerService` and `CliManagerShellCommand` classes via JADX decompilation of `services.jar` and `ExternalDisplayLauncher.apk`. No prior documentation for the `climanager` shell commands existed; we found them by pulling system JARs off the phone and decompiling them until we hit the right class.
+This entire project was **vibe coded** — discovered through a live debugging session with Claude (Anthropic), reverse engineering Motorola's `CliManagerService` and `CliManagerShellCommand` classes via JADX decompilation of `services.jar` and `ExternalDisplayLauncher.apk`. No prior documentation for the `climanager` shell commands existed; we found them by pulling system JARs off the phone and decompiling them until we hit the right class. Therefore this may not work with other Razr models and there may be bugs.
 
 ## License
 
