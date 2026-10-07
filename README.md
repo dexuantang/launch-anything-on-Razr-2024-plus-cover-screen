@@ -33,7 +33,7 @@ Motorola ships a hidden shell service called `climanager` with commands to manag
 ## Quick Start
 
 ```bash
-git clone https://github.com/dexuantang/razr-cli-fix.git
+git clone https://github.com/dexuantang/launch-anything-on-Razr-2024-plus-cover-screen.git
 cd razr-cli-fix
 chmod +x razr-cli-fix.sh
 ./razr-cli-fix.sh
